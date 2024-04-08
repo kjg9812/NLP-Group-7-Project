@@ -1,6 +1,7 @@
 import re
 from stop_list import closed_class_stop_words
 import nltk.tokenize as nltk
+import math
 
 # preprocess text function
 def preprocessText(words):
@@ -21,6 +22,9 @@ def preprocessText(words):
             final.append(word)
     return final
 
+# function that creates a vector representation
+# takes in words (lyrics of a song or grouped lyrics of a genre)
+# takes in idf scores
 def createVector(words, idfs):
     counts = {}
     sentence = preprocessText(words)
@@ -33,3 +37,36 @@ def createVector(words, idfs):
     for word in counts:
         vector[word] = (counts[word]/len(counts)) * idfs[word]
     return vector
+
+# function that returns a dictionary of idf scores for each word that exists in queries and abstracts
+# takes in queries (query songs that we are classifying)
+# takes in abstracts (grouped songs that represent genres)
+def calculateIDF(queries, abstracts):
+    # get all words
+    globalwords = set()
+    for query in queries:
+        globalwords.update(preprocessText(query.split('.W')[-1]))
+    for abstract in abstracts:
+        globalwords.update(preprocessText(abstract.split('.W')[-1]))
+
+    # count frequencies
+    abstractfrequencies = {}
+    for abstract in abstracts:
+        text = preprocessText(abstract.split('.W')[-1])
+        for word in globalwords:
+            if word in text:
+                if word not in abstractfrequencies:
+                    abstractfrequencies[word] = 1
+                else:
+                    abstractfrequencies[word] += 1
+
+    # then IDF score
+    idfs = {}
+    length = len(abstracts)
+    for word in globalwords:
+        if word not in abstractfrequencies:
+            idfs[word] = 0
+        else:
+            idfs[word] = math.log(length/(abstractfrequencies[word] + 1))
+    
+    return idfs
