@@ -71,8 +71,6 @@ def calculateIDF(queries, abstracts):
     
     return idfs
 
-
-
 # cosine similarity function
 # takes in two vectors, pumps out their cosine similarity
 def cosineSim(vec1,vec2):
