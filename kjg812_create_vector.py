@@ -5,6 +5,7 @@ import math
 from nltk.corpus import stopwords
 import nltk
 nltk.download('stopwords')
+
 # preprocess text function
 def preprocessText(words):
     stop_words = set(stopwords.words('english'))
