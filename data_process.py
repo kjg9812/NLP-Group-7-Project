@@ -57,11 +57,18 @@ def main():
     # and query songs
         # make an answer key for the query songs
             # a file that on every line consists of "song name, genre"
-
+    
+    # vectors for queries
+    queryVectors = 
     
 
 
     # FOR KEVIN H
+    # KEVIN!!! INSTEAD OF LIST OF LISTS IM GONNA HAVE A DICTIONARY
+        # IT WILL BE KEY = SONG NAME, VALUE = VECTOR
+        # so if you index queryVectors["Take Me Home Country Roads"] you will get -> a dicitionary vector
+        # each dictionary vector will have KEY = WORD, VALUE = TFIDF SCORE
+            # so if you index vector["the"] you will get -> a scalar like 0.5
     # assume you have a list of lists (each sub list is a vector) for both queries and abstracts
     # compare query songs to every abstract and get cosine similarity scores, sort by highest
         # make an output file that consists of "song name, genre, score"
