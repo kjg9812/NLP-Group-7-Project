@@ -1,4 +1,5 @@
 import pandas as pd
+import kjg812_create_vector as helper
 
 # GOAL:
 # need to read the data file and create TFIDF vectors for queries and abstracts
@@ -57,10 +58,54 @@ def main():
     # and query songs
         # make an answer key for the query songs
             # a file that on every line consists of "song name, genre"
+
+    print(train_df.head(5))
     
-    # vectors for queries
-    queryVectors = 
-    
+    # get all words
+    globalwords = set()
+    for index, row in query_songs.iterrows():
+        lyrics = row[2]
+        globalwords.update(helper.preprocessText(lyrics))
+    for index,row in train_df.iterrows():
+        lyrics = row[2]
+        globalwords.update(helper.preprocessText(lyrics))
+
+    print(len(globalwords))
+    # # count frequencies
+    # abstractfrequencies = {}
+    # for abstract in abstracts:
+    #     text = preprocessText(abstract.split('.W')[-1])
+    #     for word in globalwords:
+    #         if word in text:
+    #             if word not in abstractfrequencies:
+    #                 abstractfrequencies[word] = 1
+    #             else:
+    #                 abstractfrequencies[word] += 1
+
+    # # then IDF score
+    # idfs = {}
+    # length = len(abstracts)
+    # for word in globalwords:
+    #     if word not in abstractfrequencies:
+    #         idfs[word] = 0
+    #     else:
+    #         idfs[word] = math.log(length/(abstractfrequencies[word] + 1))
+
+    # # vectors for queries
+    # queryVectors = {}
+    # count = 1
+    # for query in queries:
+    #     id = count
+    #     text = query.split(".W")[-1]
+    #     queryVectors[id] = createVector(text)
+    #     count += 1
+
+    # # vectors for abstracts
+    # abstractVectors = {}
+    # for abstract in abstracts:
+    #     id = abstract.split()[0]
+    #     text = abstract.split(".W")[-1]
+    #     abstractVectors[id] = createVector(text)
 
 
     # FOR KEVIN H

@@ -1,10 +1,13 @@
 import re
-from stop_list import closed_class_stop_words
+from nltk.corpus import stopwords
 import nltk.tokenize as nltk
 import math
-
+from nltk.corpus import stopwords
+import nltk
+nltk.download('stopwords')
 # preprocess text function
 def preprocessText(words):
+    stop_words = set(stopwords.words('english'))
     # remove punctuation
     words = re.sub(r'[^\w\s-]', '', words)
     # remove numbers
@@ -12,7 +15,7 @@ def preprocessText(words):
     # tokenize
     words = nltk.word_tokenize(words)
     # remove stop words
-    words = [word for word in words if word not in closed_class_stop_words]
+    words = [word for word in words if word not in stop_words]
     # split hyphen words
     final = []
     for word in words:
