@@ -29,24 +29,34 @@ def main():
     # Reset the index of the training and test sets
     train_df.reset_index(drop=True, inplace=True)
     test_df.reset_index(drop=True, inplace=True)
-    
 
-# we need to separate queries and abstracts
-# take 300 (arbitrary number, is there a better number?) songs in development to be query songs
-# the rest of the songs, combine similar genre songs to make a complete abstract
-    # an abstract can consist of 50 songs with the same genre (this is an parbitrary number? is there a number that it should acc be?)
-# can also experiment with just song similarity by just making a single song an abstract
+    # we need to separate queries and abstracts
+    # take 300 (arbitrary number, is there a better number?) songs in training to be query songs
+    # Take the first 300 rows from the original DataFrame
+    query_songs = train_df.head(300)
 
-# then we'll have abstracts (consisting of combined lyrics) that are labeled with a genre
-# and query songs
-    # make an answer key for the query songs
-        # a file that on every line consists of "song name, genre"
-# compare query songs to every abstract and get cosine similarity scores, sort by highest
-    # make an output file that consists of "song name, genre, score"
-    # genre maybe comes from a dictionary that maps an abstract to its genre
-# go through this output file and produce a final output file that is similar to answer key in format "song name, genre"
-    # pick the highest scores in the previous file
-# score the model by comparing to the answer key
+    # Remove the first 300 rows from the original DataFrame
+    train_df = train_df.iloc[300:]
+
+    # Reset the index of the dataframes
+    query_songs.reset_index(drop=True, inplace=True)
+    train_df.reset_index(drop=True, inplace=True)
+
+
+    # the rest of the songs, combine similar genre songs to make a complete abstract
+        # an abstract can consist of 50 songs with the same genre (this is an parbitrary number? is there a number that it should acc be?)
+    # can also experiment with just song similarity by just making a single song an abstract
+
+    # then we'll have abstracts (consisting of combined lyrics) that are labeled with a genre
+    # and query songs
+        # make an answer key for the query songs
+            # a file that on every line consists of "song name, genre"
+    # compare query songs to every abstract and get cosine similarity scores, sort by highest
+        # make an output file that consists of "song name, genre, score"
+        # genre maybe comes from a dictionary that maps an abstract to its genre
+    # go through this output file and produce a final output file that is similar to answer key in format "song name, genre"
+        # pick the highest scores in the previous file
+    # score the model by comparing to the answer key
 
 
 if __name__ == "__main__":
