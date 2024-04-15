@@ -70,3 +70,16 @@ def calculateIDF(queries, abstracts):
             idfs[word] = math.log(length/(abstractfrequencies[word] + 1))
     
     return idfs
+
+# cosine similarity function
+# takes in two vectors, pumps out their cosine similarity
+def cosineSim(vec1,vec2):
+    dotproduct = 0
+    for word in vec1:
+        if word in vec2:
+            dotproduct += vec1[word] * vec2[word]
+    mag1 = math.sqrt(sum(vec1[word]**2 for word in vec1))
+    mag2 = math.sqrt(sum(vec2[word]**2 for word in vec2))
+    if mag1 == 0 or mag2 == 0:
+        return 0
+    return dotproduct / (mag1*mag2)
