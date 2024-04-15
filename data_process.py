@@ -1,6 +1,6 @@
 import pandas as pd
 import kjg812_create_vector as helper
-
+import math
 # GOAL:
 # need to read the data file and create TFIDF vectors for queries and abstracts
 
@@ -58,8 +58,6 @@ def main():
     # and query songs
         # make an answer key for the query songs
             # a file that on every line consists of "song name, genre"
-
-    print(train_df.head(5))
     
     # get all words
     globalwords = set()
@@ -70,43 +68,41 @@ def main():
         lyrics = row[2]
         globalwords.update(helper.preprocessText(lyrics))
 
-    print(len(globalwords))
     # # count frequencies
-    # abstractfrequencies = {}
-    # for abstract in abstracts:
-    #     text = preprocessText(abstract.split('.W')[-1])
-    #     for word in globalwords:
-    #         if word in text:
-    #             if word not in abstractfrequencies:
-    #                 abstractfrequencies[word] = 1
-    #             else:
-    #                 abstractfrequencies[word] += 1
+    abstractfrequencies = {}
+    for index,row in train_df.iterrows():
+        lyrics = helper.preprocessText(row[2])
+        for word in lyrics:
+            if word not in abstractfrequencies:
+                abstractfrequencies[word] = 1
+            else:
+                abstractfrequencies[word] += 1
 
     # # then IDF score
-    # idfs = {}
-    # length = len(abstracts)
-    # for word in globalwords:
-    #     if word not in abstractfrequencies:
-    #         idfs[word] = 0
-    #     else:
-    #         idfs[word] = math.log(length/(abstractfrequencies[word] + 1))
+    idfs = {}
+    length = 4 # we have 4 abstracts, rock, country, rap, pop
+    for word in globalwords:
+        if word not in abstractfrequencies:
+            idfs[word] = 0
+        else:
+            idfs[word] = math.log(length/(abstractfrequencies[word] + 1))
 
     # # vectors for queries
-    # queryVectors = {}
-    # count = 1
-    # for query in queries:
-    #     id = count
-    #     text = query.split(".W")[-1]
-    #     queryVectors[id] = createVector(text)
-    #     count += 1
+    queryVectors = {}
+    for index,row in query_songs.iterrows():
+        id = row[1]
+        lyrics = row[2]
+        queryVectors[id] = helper.createVector(lyrics,idfs)
 
     # # vectors for abstracts
-    # abstractVectors = {}
-    # for abstract in abstracts:
-    #     id = abstract.split()[0]
-    #     text = abstract.split(".W")[-1]
-    #     abstractVectors[id] = createVector(text)
+    abstractVectors = {}
+    grouped = train_df.groupby('Genre')
 
+    # Iterate over the groups
+    for genre, group_df in grouped:
+        id = genre
+        allLyrics = group_df['Lyrics'].str.cat(sep=' ')
+        abstractVectors[id] = helper.createVector(allLyrics,idfs)
 
     # FOR KEVIN H
     # KEVIN!!! INSTEAD OF LIST OF LISTS IM GONNA HAVE A DICTIONARY
