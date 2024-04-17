@@ -103,10 +103,8 @@ def main():
         id = genre
         allLyrics = group_df['Lyrics'].str.cat(sep=' ')
         abstractVectors[id] = helper.createVector(allLyrics,idfs)
-    print(abstractVectors['Pop'])
     # FOR KEVIN H
     # KEVIN!!! INSTEAD OF LIST OF LISTS IM GONNA HAVE A DICTIONARY
-    #ok so have queryVectors and abstractVectors !
     similarityScores = {}#to hold similarity scores to compare later
 
 
@@ -149,7 +147,11 @@ def main():
             for genre, score in similarityScores[song]:
                 f.write(f"{song} {genre} {score}\n")    
     # go through this output file and produce a final output file that is similar to answer key in format "song name, genre"
+
         # pick the highest scores in the previous file
+    with open('output.txt','r')as f:
+        for line in f:
+            print(line)
     # score the model by comparing to the answer key
 
     # format of answer key and final output file
