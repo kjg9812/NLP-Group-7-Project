@@ -113,8 +113,6 @@ def main():
         # so if you index queryVectors["Take Me Home Country Roads"] you will get -> a dicitionary vector 
 
 
-    
-
         # each dictionary vector will have KEY = WORD, VALUE = TFIDF SCORE
             # so if you index vector["the"] you will get -> a scalar like 0.5
 
@@ -152,24 +150,29 @@ def main():
         # pick the highest scores in the previous file
     finalScores = {}
     with open('output.txt','r')as f:
-        counter =0
-        for line in f:
-            lineList = line.split()
-            songNameList = lineList[: len(lineList) - 2] #remove last 2 elements of list which are genre and score --> leaves u with just song name as a list
-            if counter ==0:#handle first line
-                #first line will always be the one chosen bc we have sorted by descending similarity score
-                songName = ""
-                songName.join(songNameList)
-                finalScores[songName] = lineList[-2]#second to last element is genre
-            counter+=1
-            if counter ==4: #CHANGE THIS BY HOW MANY GENRES THE DATASET WILL HAVE !!!
-                songName = ""
-                songName.join(songNameList)
-                finalScores[songName] = lineList[-2]#second to last element is genre
-                counter=0
+            counter =0
+            for line in f:
+                lineList = line.split()
+                songNameList = lineList[: len(lineList) - 2] #remove last 2 elements of list which are genre and score --> leaves u with just song name as a list
+                if counter ==0:#handle first line
+                    #first line will always be the one chosen bc we have sorted by descending similarity score
+                    songName = ''
+                    for i in songNameList:
+                        songName+=i
+                        songName+=' '
+                    finalScores[songName] = lineList[-2]#second to last element is genre
+                counter+=1
+                if counter ==5: #CHANGE THIS BY HOW MANY GENRES THE DATASET WILL HAVE !!!
+                    songName = ''
+                    for i in songNameList:
+                        songName+=i
+                        songName+=' '
+                    finalScores[songName] = lineList[-2]#second to last element is genre
+                    counter=1
+    print(finalScores)
     with open('final_output.txt','w')as f:
-        for song,score in finalScores:
-            f.write(f"{song} {score}\n")
+            for song in finalScores:
+                f.write(f"{song} {finalScores[song]}\n")
             
 
 
