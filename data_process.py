@@ -1,6 +1,7 @@
 import pandas as pd
 import kjg812_create_vector as helper
 import math
+
 # GOAL:
 # need to read the data file and create TFIDF vectors for queries and abstracts
 
@@ -149,9 +150,29 @@ def main():
     # go through this output file and produce a final output file that is similar to answer key in format "song name, genre"
 
         # pick the highest scores in the previous file
+    finalScores = {}
     with open('output.txt','r')as f:
+        counter =0
         for line in f:
-            print(line)
+            lineList = line.split()
+            songNameList = lineList[: len(lineList) - 2] #remove last 2 elements of list which are genre and score --> leaves u with just song name as a list
+            if counter ==0:#handle first line
+                #first line will always be the one chosen bc we have sorted by descending similarity score
+                songName = ""
+                songName.join(songNameList)
+                finalScores[songName] = lineList[-2]#second to last element is genre
+            counter+=1
+            if counter ==4: #CHANGE THIS BY HOW MANY GENRES THE DATASET WILL HAVE !!!
+                songName = ""
+                songName.join(songNameList)
+                finalScores[songName] = lineList[-2]#second to last element is genre
+                counter=0
+    with open('final_output.txt','w')as f:
+        for song,score in finalScores:
+            f.write(f"{song} {score}\n")
+            
+
+
     # score the model by comparing to the answer key
 
     # format of answer key and final output file
