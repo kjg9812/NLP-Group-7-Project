@@ -103,17 +103,51 @@ def main():
         id = genre
         allLyrics = group_df['Lyrics'].str.cat(sep=' ')
         abstractVectors[id] = helper.createVector(allLyrics,idfs)
-
+    print(abstractVectors['Pop'])
     # FOR KEVIN H
     # KEVIN!!! INSTEAD OF LIST OF LISTS IM GONNA HAVE A DICTIONARY
+    #ok so have queryVectors and abstractVectors !
+    similarityScores = {}#to hold similarity scores to compare later
+
+
         # IT WILL BE KEY = SONG NAME, VALUE = VECTOR
-        # so if you index queryVectors["Take Me Home Country Roads"] you will get -> a dicitionary vector
+        # so if you index queryVectors["Take Me Home Country Roads"] you will get -> a dicitionary vector 
+
+
+    
+
         # each dictionary vector will have KEY = WORD, VALUE = TFIDF SCORE
             # so if you index vector["the"] you will get -> a scalar like 0.5
-    # assume you have a list of lists (each sub list is a vector) for both queries and abstracts
+
+        # abstract vectors have genres as keys, dictionary vector as value
+        #["the"] you will get -> a scalar like 0.5
+            
+
+
+    # assume you have a dict of dicts (each sub dict is a vector) for both queries and abstracts
     # compare query songs to every abstract and get cosine similarity scores, sort by highest
+    for song in queryVectors:#for each song
+        similarityScores[song] = {}
+        for genre in abstractVectors:#for every genre
+            cosineScore = helper.cosineSim(queryVectors[song],abstractVectors[genre])#get cosine sim of song and genre
+            similarityScores[song][genre]= cosineScore 
+            #similarityScores dict will look like {songName:{genreName:similarityScore}}
+    
+    #by now similairty scores dict is full
+
+
+    for k in similarityScores:
+        similarityScores[k] = sorted(similarityScores[k].items(), key=lambda x: x[1], reverse=True)
+
+    #sorting similarity scores
+
+
         # make an output file that consists of "song name, genre, score"
-        # genre maybe comes from a dictionary that maps an abstract to its genre
+    
+    with open('output.txt', 'w') as f:
+        for song in similarityScores:
+            for genre, score in similarityScores[song]:
+                f.write(f"{song} {genre} {score}\n")    
     # go through this output file and produce a final output file that is similar to answer key in format "song name, genre"
         # pick the highest scores in the previous file
     # score the model by comparing to the answer key
