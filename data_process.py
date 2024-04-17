@@ -162,7 +162,7 @@ def main():
                         songName+=' '
                     finalScores[songName] = lineList[-2]#second to last element is genre
                 counter+=1
-                if counter ==5: #CHANGE THIS BY HOW MANY GENRES THE DATASET WILL HAVE !!!
+                if counter ==5: #CHANGE THIS BY HOW MANY GENRES THE DATASET WILL HAVE +1 !!! (we have 4 genres so 4+1)
                     songName = ''
                     for i in songNameList:
                         songName+=i
@@ -177,7 +177,7 @@ def main():
 
 
     # score the model by comparing to the answer key
-
+    #TODO
     # format of answer key and final output file
     # each line:
     # song1 pop
