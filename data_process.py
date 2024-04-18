@@ -177,12 +177,30 @@ def main():
 
 
     # score the model by comparing to the answer key
-    #TODO
+        #go thru output file and compare to dataframe (query_songs)
+
+
+    with open('final_output.txt','r')as f:
+        counter = 0
+        correct = 0
+        for line in f:
+            line_list = line.split()#now we can get genre by indexing
+            if line_list[-1]==query_songs.iloc[counter]['Genre']: 
+                correct +=1
+            counter +=1
+    
+
+
+
     # format of answer key and final output file
     # each line:
     # song1 pop
     # song2 rock
     #....
+    #answer key is query_songs dataframe
+
+    accuracy = correct//(counter+1)
+    print("ACCURACY = ",accuracy)
 
 
 if __name__ == "__main__":
