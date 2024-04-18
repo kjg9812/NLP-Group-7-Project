@@ -169,7 +169,6 @@ def main():
                         songName+=' '
                     finalScores[songName] = lineList[-2]#second to last element is genre
                     counter=1
-    print(finalScores)
     with open('final_output.txt','w')as f:
             for song in finalScores:
                 f.write(f"{song} {finalScores[song]}\n")
@@ -199,7 +198,7 @@ def main():
     #....
     #answer key is query_songs dataframe
 
-    accuracy = correct//(counter+1)
+    accuracy = correct/(counter+1)
     print("ACCURACY = ",accuracy)
 
 

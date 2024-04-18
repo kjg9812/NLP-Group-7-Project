@@ -44,4 +44,5 @@ with open('final_output.txt','r')as f:
             correct +=1
         counter+=1
 accuracy = correct/(counter+1)
+print(query_songs.head(5))
 print("ACCURACY= ",accuracy)
