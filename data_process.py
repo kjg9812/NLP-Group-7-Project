@@ -38,10 +38,10 @@ def main():
     # we need to separate queries and abstracts
     # take 300 (arbitrary number, is there a better number?) songs in training to be query songs
     # Take the first 300 rows from the original DataFrame
-    query_songs = train_df.head(300)
+    query_songs = train_df.head(9600)
 
     # Remove the first 300 rows from the original DataFrame
-    train_df = train_df.iloc[300:]
+    train_df = train_df.iloc[9600:]
 
     # Reset the index of the dataframes
     query_songs.reset_index(drop=True, inplace=True)
@@ -109,16 +109,16 @@ def main():
     similarityScores = {}#to hold similarity scores to compare later
 
 
-        # IT WILL BE KEY = SONG NAME, VALUE = VECTOR
-        # so if you index queryVectors["Take Me Home Country Roads"] you will get -> a dicitionary vector 
+    # IT WILL BE KEY = SONG NAME, VALUE = VECTOR
+    # so if you index queryVectors["Take Me Home Country Roads"] you will get -> a dicitionary vector 
 
 
-        # each dictionary vector will have KEY = WORD, VALUE = TFIDF SCORE
-            # so if you index vector["the"] you will get -> a scalar like 0.5
+    # each dictionary vector will have KEY = WORD, VALUE = TFIDF SCORE
+        # so if you index vector["the"] you will get -> a scalar like 0.5
 
-        # abstract vectors have genres as keys, dictionary vector as value
-        #["the"] you will get -> a scalar like 0.5
-            
+    # abstract vectors have genres as keys, dictionary vector as value
+    #["the"] you will get -> a scalar like 0.5
+        
 
 
     # assume you have a dict of dicts (each sub dict is a vector) for both queries and abstracts
@@ -178,15 +178,18 @@ def main():
     # score the model by comparing to the answer key
         #go thru output file and compare to dataframe (query_songs)
 
-
+    print(query_songs["Genre"].value_counts())
+    testdict = {"Country": 0, "Rap": 0, "Rock": 0, "Pop": 0}
     with open('final_output.txt','r')as f:
         counter = 0
         correct = 0
         for line in f:
             line_list = line.split()#now we can get genre by indexing
             if line_list[-1]==query_songs.iloc[counter]['Genre']: 
+                testdict[query_songs.iloc[counter]['Genre']] += 1
                 correct +=1
             counter +=1
+    print(testdict)
     
 
 
