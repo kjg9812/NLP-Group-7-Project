@@ -3,7 +3,7 @@
 from gensim.models import Word2Vec
 import pandas as pd
 import kjg812_create_vector as helper
-from sklearn.metrics.pairwise import cosine_similarity
+# from sklearn.metrics.pairwise import cosine_similarity
 
 def main():
     # devote 20% of the data for testing
@@ -66,9 +66,10 @@ def main():
     for genre, group_df in grouped:
         allLyrics = group_df['Lyrics'].str.cat(sep=' ')
         cleanedlyrics = helper.preprocessText(allLyrics)
-        genre_embeddings[genre] = model.infer_vector(cleanedlyrics, word2vec_model)
+        genre_embeddings[genre] = model.infer_vector(cleanedlyrics, genre_models[genre])
     
     ### iterate through query songs and do cosine similarity
+    genre_similarity_scores = {}
     for index,row in query_songs.iterrows():
         id = row[1]
         lyrics = row[2]
@@ -79,17 +80,16 @@ def main():
         # Calculate document embedding for the test song for each genre
         test_song_embeddings = {}
         for genre, model in genre_models.items():
-            test_song_embeddings[genre] = model.infer_vector(preprocessed_test_song_lyrics, model)
-
-
+            test_song_embeddings[id] = model.infer_vector(preprocessed_test_song_lyrics, model)
 
         # Calculate cosine similarity between the test song embedding and genre embeddings
-        genre_similarity_scores = {}
-        for genre, embedding in test_song_embeddings.items():
-            similarity_score = cosine_similarity([embedding], [genre_embeddings[genre]])[0][0]
-            genre_similarity_scores[genre] = similarity_score
+        for genre, embedding in genre_embeddings.items():
+            print(test_song_embeddings[id], embedding)
+            similarity_score = helper.cosineSim(test_song_embeddings[id], embedding)[0][0]
+            genre_similarity_scores[test_song_embeddings[0]] = similarity_score
 
-
+    
+    print(genre_similarity_scores)
 
     
 
