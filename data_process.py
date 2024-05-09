@@ -37,7 +37,7 @@ def main():
 
     # we need to separate queries and abstracts
     # take 300 (arbitrary number, is there a better number?) songs in training to be query songs
-    # Take the first 300 rows from the original DataFrame
+    # Take the first 9600 rows from the original DataFrame
     query_songs = train_df.head(9600)
 
     # Remove the first 300 rows from the original DataFrame
@@ -47,13 +47,33 @@ def main():
     query_songs.reset_index(drop=True, inplace=True)
     train_df.reset_index(drop=True, inplace=True)
 
+    #cap df value counts to 12000
+
+    print(train_df['Genre'].value_counts())
+
+    print(train_df)
+    genreCounts = train_df["Genre"].value_counts()
+    print(genreCounts)
+    dfs=[]
+    ratios = 12000/genreCounts
+    for genre,ratio in ratios.items():
+        genreDF=train_df.loc[train_df['Genre']==genre]
+        genreDF = genreDF.sample(frac = ratio)
+        dfs.append(genreDF)
+    balancedDF = pd.concat(dfs,ignore_index=True)
+    print(balancedDF)
+    print(balancedDF['Genre'].value_counts())
+
     # the rest of the songs, combine similar genre songs to make a complete abstract
         # an abstract can consist of 50 songs with the same genre (this is an parbitrary number? is there a number that it should acc be?)
         # is there any detriment to using all the songs in the genre to represent one abstract?
     # can also experiment with just song similarity by just making a single song an abstract
 
     # debug some counts for each genre
+    train_df=balancedDF
     print(train_df['Genre'].value_counts())
+
+    #cap df value counts to 12000
 
     # then we'll have abstracts (consisting of combined lyrics) that are labeled with a genre
     # and query songs
@@ -61,6 +81,9 @@ def main():
             # a file that on every line consists of "song name, genre"
     
     # get all words
+    
+
+
     globalwords = set()
     for index, row in query_songs.iterrows():
         lyrics = row[2]

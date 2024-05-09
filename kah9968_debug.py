@@ -34,6 +34,21 @@ train_df = train_df.iloc[300:]
     # Reset the index of the dataframes
 query_songs.reset_index(drop=True, inplace=True)
 train_df.reset_index(drop=True, inplace=True)
+print(train_df['Genre'].value_counts())
+
+print(train_df)
+genreCounts = train_df["Genre"].value_counts()
+print(genreCounts)
+dfs=[]
+ratios = 14000/genreCounts
+for genre,ratio in ratios.items():
+    genreDF=train_df.loc[train_df['Genre']==genre]
+    genreDF = genreDF.sample(frac = ratio)
+    dfs.append(genreDF)
+balancedDF = pd.concat(dfs,ignore_index=True)
+print(balancedDF)
+print(balancedDF['Genre'].value_counts())
+    
 
 with open('final_output.txt','r')as f:
     counter = 0
@@ -44,5 +59,5 @@ with open('final_output.txt','r')as f:
             correct +=1
         counter+=1
 accuracy = correct/(counter+1)
-print(query_songs.head(5))
+#print(query_songs.head(5))
 print("ACCURACY= ",accuracy)
