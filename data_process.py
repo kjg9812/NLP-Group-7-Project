@@ -38,6 +38,8 @@ def main():
     # we need to separate queries and abstracts
     # take 300 (arbitrary number, is there a better number?) songs in training to be query songs
     # Take the first 9600 rows from the original DataFrame
+
+    
     query_songs = train_df.head(9600)
 
     # Remove the first 9600 rows from the original DataFrame
@@ -47,7 +49,7 @@ def main():
     query_songs.reset_index(drop=True, inplace=True)
     train_df.reset_index(drop=True, inplace=True)
 
-    #cap df value counts to 12000 (could change to satisfy different size abstract)
+    #cap df value counts to 12000 (could change to satisfy different size )
 
     print(train_df['Genre'].value_counts())
 
