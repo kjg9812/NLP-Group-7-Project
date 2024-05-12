@@ -88,9 +88,9 @@ with open('final_output.txt','r')as f:
 accuracy = correct/(counter+1)
 print(counter+1)
 #print(query_songs.head(5))
-print(testdict)
-print(totaldict)
+print(testdict)#songs correct per genre
+print(totaldict)#songs total in genre
 for key in accuracydict:
     accuracydict[key] = testdict[key]/totaldict[key]
-print(accuracydict)
+print(accuracydict)#songscorrect/songstotalpergenre
 print("ACCURACY= ",accuracy)
