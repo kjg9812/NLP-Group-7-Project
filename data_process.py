@@ -32,14 +32,6 @@ def main():
     train_df.reset_index(drop=True, inplace=True)
     test_df.reset_index(drop=True, inplace=True)
 
-    print(train_df.shape[0])
-    # 15 percent of total are the query songs
-
-    # we need to separate queries and abstracts
-    # take 300 (arbitrary number, is there a better number?) songs in training to be query songs
-    # Take the first 9600 rows from the original DataFrame
-
-    
     query_songs = train_df.head(9600)
 
     # Remove the first 9600 rows from the original DataFrame
@@ -50,12 +42,8 @@ def main():
     train_df.reset_index(drop=True, inplace=True)
 
     #cap df value counts to 12000 (could change to satisfy different size )
-
-    print(train_df['Genre'].value_counts())
-
-    print(train_df)
     genreCounts = train_df["Genre"].value_counts()#df of genre counts and genres
-    print(genreCounts)
+
     #store upcoming dfs
     dfs=[]
     ratios = 12000/genreCounts #12000/genre count to get ratio needed to get to 12000 genre count
@@ -64,30 +52,15 @@ def main():
         genreDF = genreDF.sample(frac = ratio)#grab a sample of ratio size from genreDF--> gets to 12000 total
         dfs.append(genreDF)#append to list of dfs
     balancedDF = pd.concat(dfs,ignore_index=True)#concat all dfs in genre list to new balanced DF
-    print(balancedDF)
-    print(balancedDF['Genre'].value_counts()) #confirm that genre counts are all 120000
 
     # the rest of the songs, combine similar genre songs to make a complete abstract
-        # an abstract can consist of 50 songs with the same genre (this is an parbitrary number? is there a number that it should acc be?)
-        # is there any detriment to using all the songs in the genre to represent one abstract?
-    # can also experiment with just song similarity by just making a single song an abstract
-
-    # debug some counts for each genre
-    #set train_df to balancedDF so train_df has genre counts of equal size
-    train_df=balancedDF
-    print(train_df['Genre'].value_counts())
-
-    #cap df value counts to 12000
-
+        # an abstract can consist of all songs that we have in our train df
     # then we'll have abstracts (consisting of combined lyrics) that are labeled with a genre
     # and query songs
         # make an answer key for the query songs
             # a file that on every line consists of "song name, genre"
-    
+
     # get all words
-    
-
-
     globalwords = set()
     for index, row in query_songs.iterrows():
         lyrics = row[2]
@@ -131,23 +104,16 @@ def main():
         id = genre
         allLyrics = group_df['Lyrics'].str.cat(sep=' ')
         abstractVectors[id] = helper.createVector(allLyrics,idfs)
-    # FOR KEVIN H
-    # KEVIN!!! INSTEAD OF LIST OF LISTS IM GONNA HAVE A DICTIONARY
-    similarityScores = {}#to hold similarity scores to compare later
 
+    similarityScores = {} #to hold similarity scores to compare later
 
     # IT WILL BE KEY = SONG NAME, VALUE = VECTOR
     # so if you index queryVectors["Take Me Home Country Roads"] you will get -> a dicitionary vector 
-
-
     # each dictionary vector will have KEY = WORD, VALUE = TFIDF SCORE
         # so if you index vector["the"] you will get -> a scalar like 0.5
-
     # abstract vectors have genres as keys, dictionary vector as value
     #["the"] you will get -> a scalar like 0.5
         
-
-
     # assume you have a dict of dicts (each sub dict is a vector) for both queries and abstracts
     # compare query songs to every abstract and get cosine similarity scores, sort by highest
     for song in queryVectors:#for each song
@@ -158,23 +124,18 @@ def main():
             #similarityScores dict will look like {songName:{genreName:similarityScore}}
     
     #by now similairty scores dict is full
-
-
     for k in similarityScores:
         similarityScores[k] = sorted(similarityScores[k].items(), key=lambda x: x[1], reverse=True)
 
     #sorting similarity scores
-
-
         # make an output file that consists of "song name, genre, score"
-    
     with open('output.txt', 'w') as f:
         for song in similarityScores:
             for genre, score in similarityScores[song]:
-                f.write(f"{song} {genre} {score}\n")    
-    # go through this output file and produce a final output file that is similar to answer key in format "song name, genre"
+                f.write(f"{song} {genre} {score}\n")   
 
-        # pick the highest scores in the previous file
+    # go through this output file and produce a final output file that is similar to answer key in format "song name, genre"
+    # pick the highest scores in the previous file
     finalScores = {}
     with open('output.txt','r')as f:
             counter =0
@@ -189,7 +150,7 @@ def main():
                         songName+=' '
                     finalScores[songName] = lineList[-2]#second to last element is genre
                 counter+=1
-                if counter ==5: #CHANGE THIS BY HOW MANY GENRES THE DATASET WILL HAVE +1 !!! (we have 4 genres so 4+1)
+                if counter ==5: 
                     songName = ''
                     for i in songNameList:
                         songName+=i
@@ -199,13 +160,9 @@ def main():
     with open('final_output.txt','w')as f:
             for song in finalScores:
                 f.write(f"{song} {finalScores[song]}\n")
-            
-
-
+        
     # score the model by comparing to the answer key
         #go thru output file and compare to dataframe (query_songs)
-
-    print(query_songs["Genre"].value_counts())
     testdict = {"Country": 0, "Rap": 0, "Rock": 0, "Pop": 0}
     with open('final_output.txt','r')as f:
         counter = 0
@@ -216,11 +173,7 @@ def main():
                 testdict[query_songs.iloc[counter]['Genre']] += 1
                 correct +=1
             counter +=1
-    print(testdict)
     
-
-
-
     # format of answer key and final output file
     # each line:
     # song1 pop
@@ -230,7 +183,6 @@ def main():
 
     accuracy = correct/(counter+1)
     print("ACCURACY = ",accuracy)
-
 
 if __name__ == "__main__":
     main()

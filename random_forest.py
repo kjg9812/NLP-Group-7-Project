@@ -23,10 +23,6 @@ def create_song_features(lyrics, word2vec_model):
   words = preprocess_lyrics(lyrics)
   # Create word vectors
   word_vectors = [word2vec_model.get_vector(word, None) for word in words if word in word2vec_model]
-  # Check if any words were not found in the model
-#   word_counts = Counter(word for word in word_vectors if word is None)
-#   if word_counts:
-#     print(f"WARNING: Words not found in model: {word_counts}")
   # Calculate average word vector (representing the song)
   song_vector = average_word_vectors(word_vectors)
   return song_vector
@@ -80,13 +76,3 @@ word2vec_model = KeyedVectors.load_word2vec_format("GoogleNews-vectors-negative3
 
 model = train_genre_classifier(lyrics_data, genre_labels, word2vec_model)
 
-
-### TESTS
-# # Use the trained model to predict genre for new songs
-# new_lyrics = """ 
-# hi
-# """
-# new_song_features = create_song_features(new_lyrics, word2vec_model)
-# predicted_genre = model.predict(new_song_features)[0]
-
-# print(f"Predicted Genre for the new song: {predicted_genre}")

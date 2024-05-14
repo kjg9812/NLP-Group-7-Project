@@ -18,9 +18,6 @@ stop = stopwords.words('english')
 def preprocess_lyrics(lyrics):
   lyrics = lyrics.lower()
   # Remove punctuation
-
-  ## possibly remove meta info within the lyrics? this wasn't working though
-  # lyrics = re.sub(r"\[(.*?)\]|\((.*?)\)", "", lyrics)
   punct = set(string.punctuation)
   lyrics = ''.join(c for c in lyrics if c not in punct)
   # Remove stop words (optional)
@@ -129,15 +126,3 @@ from gensim.models import KeyedVectors
 word2vec_model = KeyedVectors.load_word2vec_format("GoogleNews-vectors-negative300.bin", binary=True)
 
 model = train_genre_classifier(lyrics_data, genre_labels, word2vec_model)
-
-
-### TESTS
-# # Use the trained model to predict genre for new songs
-# new_lyrics = """ 
-# This is a new song, can you predict the genre?
-# """
-# new_song_features = create_song_features(new_lyrics, word2vec_model)
-# predicted_genre = model.predict(new_song_features)[0]
-
-# # Based on your genre label mapping, interpret the predicted genre
-# print(f"Predicted Genre for the new song: {predicted_genre}")
