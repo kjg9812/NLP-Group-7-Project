@@ -4,8 +4,13 @@ from sklearn.metrics import accuracy_score
 import string
 from nltk.corpus import stopwords
 import gensim.downloader as api
-from collections import Counter
 import pandas as pd
+from sklearn.metrics import classification_report
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn import metrics
+import regex as re
 
 stop = stopwords.words('english')
 
@@ -53,8 +58,26 @@ def train_genre_classifier(lyrics_data, genre_labels, word2vec_model):
   model = SVC()
   model.fit(X_train, y_train)
   # Evaluate model accuracy on test set
-  accuracy = accuracy_score(y_test, model.predict(X_test))
+  # Evaluate model accuracy on test set
+  predictions = model.predict(X_test)
+  accuracy = accuracy_score(y_test, predictions)
   print(f"Model Accuracy: {accuracy:.4f}")
+
+
+  # Calculate precision, recall, and F1 score
+  report = classification_report(y_test, predictions)
+  print(report)
+
+  # Plot confusion matrix
+  cm = metrics.confusion_matrix(y_test, predictions)
+  print(cm)
+  plt.figure(figsize=(9,9))
+  sns.heatmap(cm, annot=True, fmt=".3f", linewidths=.5, square = True, cmap = 'Blues_r');
+  plt.ylabel('Actual label');
+  plt.xlabel('Predicted label');
+  all_sample_title = 'Accuracy Score: {0}'.format(accuracy)
+  plt.title(all_sample_title, size = 15)
+  plt.savefig("log_regression.png")
   return model
 
 # Example usage

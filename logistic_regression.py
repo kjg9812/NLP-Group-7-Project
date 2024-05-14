@@ -4,7 +4,6 @@ from sklearn.metrics import accuracy_score
 import string
 from nltk.corpus import stopwords
 import gensim.downloader as api
-from collections import Counter
 import pandas as pd
 
 import matplotlib.pyplot as plt
@@ -12,14 +11,16 @@ import seaborn as sns
 from sklearn import metrics
 import regex as re
 
+from sklearn.metrics import classification_report
+
 stop = stopwords.words('english')
 
 def preprocess_lyrics(lyrics):
   lyrics = lyrics.lower()
   # Remove punctuation
 
+  ## possibly remove meta info within the lyrics? this wasn't working though
   # lyrics = re.sub(r"\[(.*?)\]|\((.*?)\)", "", lyrics)
-
   punct = set(string.punctuation)
   lyrics = ''.join(c for c in lyrics if c not in punct)
   # Remove stop words (optional)
@@ -61,7 +62,11 @@ def train_genre_classifier(lyrics_data, genre_labels, word2vec_model):
   accuracy = accuracy_score(y_test, predictions)
   print(f"Model Accuracy: {accuracy:.4f}")
 
+  # Calculate precision, recall, and F1 score
+  report = classification_report(y_test, predictions)
+  print(report)
 
+  # Plot confusion matrix
   cm = metrics.confusion_matrix(y_test, predictions)
   print(cm)
   plt.figure(figsize=(9,9))
@@ -72,8 +77,6 @@ def train_genre_classifier(lyrics_data, genre_labels, word2vec_model):
   plt.title(all_sample_title, size = 15)
   plt.savefig("log_regression.png")
   return model
-
-
 
 # Example usage
 # Assuming you have loaded your song lyrics data (lyrics_data) which is a list of songs and genre labels (genre_labels) which is a list of labels (1-4)

@@ -33,7 +33,7 @@ def main():
     test_df.reset_index(drop=True, inplace=True)
 
     print(train_df.shape[0])
-    # 13 percent of total are the query songs
+    # 15 percent of total are the query songs
 
     # we need to separate queries and abstracts
     # take 300 (arbitrary number, is there a better number?) songs in training to be query songs
