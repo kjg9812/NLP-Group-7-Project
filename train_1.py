@@ -88,8 +88,6 @@ def main():
             similarity_score = helper.cosineSim(test_song_embeddings[id], embedding)[0][0]
             genre_similarity_scores[test_song_embeddings[0]] = similarity_score
 
-    
-    print(genre_similarity_scores)
 
     
 
