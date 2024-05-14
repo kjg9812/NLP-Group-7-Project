@@ -37,15 +37,35 @@ def main():
 
     # we need to separate queries and abstracts
     # take 300 (arbitrary number, is there a better number?) songs in training to be query songs
-    # Take the first 300 rows from the original DataFrame
+    # Take the first 9600 rows from the original DataFrame
+
+    
     query_songs = train_df.head(9600)
 
-    # Remove the first 300 rows from the original DataFrame
+    # Remove the first 9600 rows from the original DataFrame
     train_df = train_df.iloc[9600:]
 
     # Reset the index of the dataframes
     query_songs.reset_index(drop=True, inplace=True)
     train_df.reset_index(drop=True, inplace=True)
+
+    #cap df value counts to 12000 (could change to satisfy different size )
+
+    print(train_df['Genre'].value_counts())
+
+    print(train_df)
+    genreCounts = train_df["Genre"].value_counts()#df of genre counts and genres
+    print(genreCounts)
+    #store upcoming dfs
+    dfs=[]
+    ratios = 12000/genreCounts #12000/genre count to get ratio needed to get to 12000 genre count
+    for genre,ratio in ratios.items():#go thru ratio df by genre
+        genreDF=train_df.loc[train_df['Genre']==genre]#grab every row in the current genre and make a df for this genre
+        genreDF = genreDF.sample(frac = ratio)#grab a sample of ratio size from genreDF--> gets to 12000 total
+        dfs.append(genreDF)#append to list of dfs
+    balancedDF = pd.concat(dfs,ignore_index=True)#concat all dfs in genre list to new balanced DF
+    print(balancedDF)
+    print(balancedDF['Genre'].value_counts()) #confirm that genre counts are all 120000
 
     # the rest of the songs, combine similar genre songs to make a complete abstract
         # an abstract can consist of 50 songs with the same genre (this is an parbitrary number? is there a number that it should acc be?)
@@ -53,7 +73,11 @@ def main():
     # can also experiment with just song similarity by just making a single song an abstract
 
     # debug some counts for each genre
+    #set train_df to balancedDF so train_df has genre counts of equal size
+    train_df=balancedDF
     print(train_df['Genre'].value_counts())
+
+    #cap df value counts to 12000
 
     # then we'll have abstracts (consisting of combined lyrics) that are labeled with a genre
     # and query songs
@@ -61,6 +85,9 @@ def main():
             # a file that on every line consists of "song name, genre"
     
     # get all words
+    
+
+
     globalwords = set()
     for index, row in query_songs.iterrows():
         lyrics = row[2]
